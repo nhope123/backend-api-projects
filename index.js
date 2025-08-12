@@ -1,6 +1,7 @@
 // index.js
 // where your node app starts
 
+// Timestamp requirements 
 // 1. You should provide your own project, not the example URL.
 // 2. A request to /api/:date? with a valid date should return a JSON object with a unix key that is a Unix timestamp of the input date in milliseconds (as type Number)
 // 3. A request to /api/:date? with a valid date should return a JSON object with a utc key that is a string of the input date in the format: Thu, 01 Jan 1970 00:00:00 GMT
@@ -9,6 +10,14 @@
 // 6. If the input date string is invalid, the API returns an object having the structure { error : "Invalid Date" }
 // 7. An empty date parameter should return the current time in a JSON object with a unix key
 // 8. An empty date parameter should return the current time in a JSON object with a utc key
+
+// Header Parser Requirements
+
+// Tests
+// 1. You should provide your own project, not the example URL.
+// 2. A request to /api/whoami should return a JSON object with your IP address in the ipaddress key.
+// 3. A request to /api/whoami should return a JSON object with your preferred language in the language key.
+// 4. A request to /api/whoami should return a JSON object with your software in the software key.
 
 // init project
 var express = require('express');
@@ -27,6 +36,15 @@ app.use(express.static('public'));
 app.get("/api/hello", function (req, res) {
   res.json({greeting: 'hello API'});
 });
+
+app.get("/api/whoami", (req, res) => {
+
+  res.json({
+    ipaddress: req.ip || req.connection.remoteAddress,
+    language: req.headers['accept-language'],
+    software: req.headers['user-agent']
+  })
+})
 
 app.get("/api/:date?", (req, res) => {
 
@@ -49,6 +67,7 @@ app.get("/api/:date?", (req, res) => {
   response.utc = currentDate.toUTCString();
   res.json(response);
 })
+
 
 // http://expressjs.com/en/starter/basic-routing.html
 app.get("/", function (req, res) {
